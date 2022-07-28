@@ -14,6 +14,9 @@
 
 @import url('./blocks/header/header.css');
 @import url('./blocks/header/__logo/header__logo.css');
+@import url('./blocks/header/__link/header__link.css');
+@import url('./blocks/header/__email/header__email.css');
+
 
 
 /*PROFILE*/
@@ -72,6 +75,9 @@
 /*REGISTER*/ 
 @import url('./blocks/register/register.css');
 @import url('./blocks/register/__title/register__title.css');
+@import url('./blocks/register/__form/register__form.css');
 @import url('./blocks/register/__input/register__input.css');
 @import url('./blocks/register/__button/register__button.css');
 @import url('./blocks/register/__subtitle/register__subtitle.css');
+@import url('./blocks/register/__subtitle/_text/register__subtitile_text.css');
+@import url('./blocks/register/__link/register__link.css');

@@ -2,19 +2,20 @@ import React from "react";
 import { withRouter } from 'react-router-dom';
 
 function Login(props) {
-
-    const [values, setValues] = React.useState({});
-
-    function handleChange(e) {
-        const { value, name } = e.target;
-        setValues({ ...values, [name]: value });
+    const [email, setEmail] = React.useState("");
+    const [password, setpassword] = React.useState("");
+  
+    function handleEmailChange(e) {
+      setEmail(e.target.value);
     }
-
+    function handlePasswordChange(e) {
+      setpassword(e.target.value);
+    }
+  
     function handleSubmit(e) {
-        e.preventDefault();
-        props.onLogin( values.password, values.email );
+      e.preventDefault();
+      props.onLogin(email, password);
     }
-    
 
     return(
         <section className='register'>
@@ -25,12 +26,12 @@ function Login(props) {
                 className="register__input"
                 required
                 autoComplete="on"
-                name="password"
-                type="password"
+                name="email"
+                type="email"
                 minLength="5"
-                maxLength="5"
+                maxLength="40"
                 placeholder="Email" 
-                onChange={handleChange}
+                onChange={handleEmailChange}
                 />
                 <span className="register__error register__error_visible name-error" />
                 <input 
@@ -40,9 +41,9 @@ function Login(props) {
                 name="password"
                 type="password"
                 minLength="5"
-                maxLength="5"
+                maxLength="40"
                 placeholder="Пароль" 
-                onChange={handleChange}
+                onChange={handlePasswordChange}
           />
           <span className="register__error register__error_visible name-error" />
                 <button className="register__button">Войти</button>

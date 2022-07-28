@@ -10,7 +10,7 @@
     border: none;
     background-color: black;
     border-bottom: 2px solid #CCCCCC;
-    
+    padding: 0;
 }
 
 .register__input:first-of-type {
