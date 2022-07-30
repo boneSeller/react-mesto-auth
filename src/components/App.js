@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { ReactDOM, Route, Switch, Redirect, useHistory } from "react-router-dom";
+import { Route, Switch, Redirect, useHistory } from "react-router-dom";
 import "../index.css";
 import Header from "./Header";
 import Main from "./Main";
@@ -15,6 +15,7 @@ import DeletePopup from "./DeletePopup";
 import Register from "./Register";
 import Login from './Login';
 import * as auth from '../utils/Auth';
+import InfoTooltip from "./InfoTooltip";
 import ProtectedRoute from './ProtectedRoute';
 
 function App() {
@@ -28,53 +29,13 @@ function App() {
   const [selectedCardToDelete, setSelectedCardToDelete] = React.useState({});
   const [currentUser, setCurrentUser] = React.useState({});
   const [cards, setCards] = React.useState([]);
-  const [showLoading, setShowLoading] = React.useState();
-  const [isInfoTooltip, setIsInfoTooltip] = React.useState(false);
+  const [showLoading, setShowLoading] = React.useState(false);
+  const [isInfoTooltipPopupOpen, setIsInfoTooltipPopupOpen] = React.useState(false);
   const [isLoggedIn, setIsLoggedIn] = React.useState(false);
-  const [noMistake, setNoMistake] = React.useState(false);
+  const [isSuccess, setIsSuccess] = React.useState(false);
   const [userEmail, setUserEmail] = React.useState("");
 
   const history = useHistory();
-
-  function signOut(){
-    localStorage.removeItem("jwt");
-    setIsLoggedIn(false);
-    history.push("/sign-in");
-  }
-
-  function handleRegisterSubmit(email, password) {
-    auth
-      .register(email, password)
-      .then((res) => {
-        setIsInfoTooltip(true);
-        setNoMistake(true);
-        history.push("/sign-in");
-      })
-      .catch((err) => {
-        if (err.status === 400) {
-          console.log("400 - некорректно заполнено одно из полей");
-        }
-        setIsInfoTooltip(true);
-        setNoMistake(false);
-      });
-  }
-
-  function handleLoginSubmit(email, password){
-    auth.login(email, password)
-      .then((res) => {
-        localStorage.setItem("jwt", res.token);
-        setIsLoggedIn(true);
-        setUserEmail(email);
-        history.push("/");
-          })
-      .catch((err) => {
-        setIsInfoTooltip(true)
-        setNoMistake(false)
-        console.log(err)
-      })
-  }
-
-
 
   React.useEffect(() => {
     const jwt = localStorage.getItem("jwt");
@@ -94,6 +55,51 @@ function App() {
         });
     }
   }, [history]);
+
+  function signOut(){
+    localStorage.removeItem("jwt");
+    setIsLoggedIn(false);
+    history.push("/sign-in");
+  }
+
+  function handleRegisterSubmit(email, password) {
+    auth
+      .register(email, password)
+      .then((res) => {
+        setIsInfoTooltipPopupOpen(true);
+        setIsSuccess(true);
+        history.push("/sign-in");
+      })
+      .catch((err) => {
+        if (err.status === 400) {
+          console.log("400 - некорректно заполнено одно из полей");
+        }
+        setIsInfoTooltipPopupOpen(true);
+        setIsSuccess(false);
+      });
+  }
+
+  function handleLoginSubmit(email, password) {
+    auth
+      .login(email, password)
+      .then((res) => {
+        localStorage.setItem("jwt", res.token);
+        setIsLoggedIn(true);
+        setUserEmail(email);
+        history.push("/");
+      })
+      .catch((err) => {
+        if (err.status === 400) {
+          console.log("400 - не передано одно из полей");
+        } else if (err.status === 401) {
+          console.log("401 - пользователь с email не найден");
+        }
+      });
+  }
+
+
+
+
 
   React.useEffect(() => {
     api.getUserInfo()
@@ -212,9 +218,9 @@ function App() {
     setIsAddPlacePopupOpen(false);
     setIsEditProfilePopupOpen(false);
     setIsdeletePopupOpen(false);
+    setIsInfoTooltipPopupOpen(false)
     setSelectedCard({});
     setSelectedCardToDelete({});
-    setIsInfoTooltip(false)
   }
 
   return (
@@ -222,14 +228,30 @@ function App() {
     <CurrentUserContext.Provider value={currentUser}>
     <div className="page">
       <div className="container">
+
         <Header email={userEmail} onSignOut={signOut}
         />
       <Switch>
+ 
+
+      <Route  path="/sign-in">
+        <Login onLogin={handleLoginSubmit} />
+      </Route>
+
+      <Route path="/sign-up">
+        <Register onRegister={handleRegisterSubmit} />
+      </Route>
+
+
+      <Route>
+              {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+      </Route>
+      
       <ProtectedRoute
           exact
           path="/"
-          isLoggedIn={isLoggedIn}
           component={Main}
+          isLoggedIn={isLoggedIn}
           onEditProfile={handleEditProfileClick}
           onAddPlace={handleAddPlaceClick}
           onEditAvatar={handleEditAvatarClick}
@@ -237,18 +259,9 @@ function App() {
           onCardLike={handleCardLike}
           onTrashButton={handleDeletePopupClick}
           cards={cards}
+          showLoading={showLoading}
       />
 
-      <Route path="/sign-up">
-        <Register onRegister={handleRegisterSubmit} />
-      </Route>
-
-      <Route path="/sign-in">
-        <Login onLogin={handleLoginSubmit} />
-      </Route>
-
-
-        
       </Switch>
         <Footer />
         <EditAvatarPopup isOpen={isEditAvatarPopupOpen} onClose={closeAllPopups} showLoading={showLoading} onUpdateAvatar={handleUpdateAvatar}/>
@@ -256,6 +269,11 @@ function App() {
         <AddPlacePopup isOpen={isAddPlacePopupOpen} onClose={closeAllPopups} onAddPlace={handleAddPlaceSubmit} showLoading={showLoading}/>
         <DeletePopup isOpen={isDeletePopupOpen} onClose={closeAllPopups} showLoading={showLoading} onCardDelete={handleCardDelete} card={selectedCardToDelete} />
         <ImagePopup card={selectedCard} onClose={closeAllPopups} />
+        <InfoTooltip
+          isOpen={isInfoTooltipPopupOpen}
+          onClose={closeAllPopups}
+          isSuccess={isSuccess}
+        />
       </div>
     </div>
     </CurrentUserContext.Provider>

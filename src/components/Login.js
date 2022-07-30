@@ -1,5 +1,6 @@
 import React from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter} from 'react-router-dom';
+
 
 function Login(props) {
     const [email, setEmail] = React.useState("");
@@ -31,6 +32,7 @@ function Login(props) {
                 minLength="5"
                 maxLength="40"
                 placeholder="Email" 
+                value={email || ""}
                 onChange={handleEmailChange}
                 />
                 <span className="register__error register__error_visible name-error" />
@@ -43,10 +45,11 @@ function Login(props) {
                 minLength="5"
                 maxLength="40"
                 placeholder="Пароль" 
+                value={password || ""}
                 onChange={handlePasswordChange}
           />
           <span className="register__error register__error_visible name-error" />
-                <button className="register__button">Войти</button>
+                <button className="register__button" type="submit">Войти</button>
             </form>
             
         </section>
