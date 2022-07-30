@@ -232,21 +232,7 @@ function App() {
         <Header email={userEmail} onSignOut={signOut}
         />
       <Switch>
- 
 
-      <Route  path="/sign-in">
-        <Login onLogin={handleLoginSubmit} />
-      </Route>
-
-      <Route path="/sign-up">
-        <Register onRegister={handleRegisterSubmit} />
-      </Route>
-
-
-      <Route>
-              {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
-      </Route>
-      
       <ProtectedRoute
           exact
           path="/"
@@ -261,6 +247,21 @@ function App() {
           cards={cards}
           showLoading={showLoading}
       />
+ 
+      <Route  path="/sign-in">
+        <Login onLogin={handleLoginSubmit} />
+      </Route>
+
+      <Route path="/sign-up">
+        <Register onRegister={handleRegisterSubmit} />
+      </Route>
+
+
+      <Route>
+              {isLoggedIn ? <Redirect to="/" /> : <Redirect to="/sign-in" />}
+      </Route>
+      
+
 
       </Switch>
         <Footer />

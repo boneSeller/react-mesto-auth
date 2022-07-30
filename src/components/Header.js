@@ -19,9 +19,9 @@ function Header(props) {
         </Link>
       </Route> 
       <Route  path="/">
-          <div className="header__user-info">
+          <div className="header__user">
            <p className="header__email">{props.email}</p>
-          <Link to='/sign-in' className="header__link" onClick={props.onSignOut}>Выйти</Link>
+          <Link to='/sign-in' className="header__link_out" onClick={props.onSignOut}>Выйти</Link>
           </div>          
         </Route>
     </Switch>  
