@@ -97,11 +97,8 @@ function App() {
       });
   }
 
-
-
-
-
   React.useEffect(() => {
+    if (isLoggedIn) {
     api.getUserInfo()
       .then((data) => {
         setCurrentUser(data);
@@ -109,9 +106,10 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+}}, [isLoggedIn]);
 
   React.useEffect(() => {
+    if (isLoggedIn) {
     Promise.all([api.getInitialCards()])
       .then(([cards]) => {
         setCards(cards);
@@ -119,7 +117,7 @@ function App() {
       .catch((err) => {
         console.log(err);
       });
-  }, []);
+  }}, [isLoggedIn]);
 
   function handleCardClick(card) {
     setSelectedCard(card);
